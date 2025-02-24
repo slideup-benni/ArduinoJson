@@ -25,8 +25,6 @@ TEST_CASE("JsonDocument::operator[]") {
     SECTION("string literal") {
       REQUIRE(doc["abc"] == "ABC");
       REQUIRE(cdoc["abc"] == "ABC");
-      REQUIRE(doc["abc\0d"] == "ABCD");
-      REQUIRE(cdoc["abc\0d"] == "ABCD");
     }
 
     SECTION("std::string") {

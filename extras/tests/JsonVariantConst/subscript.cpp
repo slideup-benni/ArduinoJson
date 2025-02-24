@@ -57,7 +57,7 @@ TEST_CASE("JsonVariantConst::operator[]") {
     SECTION("string literal") {
       REQUIRE(var["ab"] == "AB"_s);
       REQUIRE(var["abc"] == "ABC"_s);
-      REQUIRE(var["abc\0d"] == "ABCD"_s);
+      REQUIRE(var["abc\0d"] == "ABC"_s);
       REQUIRE(var["def"].isNull());
       REQUIRE(var[0].isNull());
     }

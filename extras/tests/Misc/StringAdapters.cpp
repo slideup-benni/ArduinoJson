@@ -21,7 +21,7 @@ TEST_CASE("adaptString()") {
     auto s = adaptString("bravo\0alpha");
 
     CHECK(s.isNull() == false);
-    CHECK(s.size() == 11);
+    CHECK(s.size() == 5);
     CHECK(s.isStatic() == true);
   }
 

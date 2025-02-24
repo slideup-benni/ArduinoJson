@@ -80,8 +80,9 @@ template <size_t N>
 struct StringAdapter<const char (&)[N]> {
   using AdaptedString = RamString;
 
-  static AdaptedString adapt(const char (&p)[N]) {
-    return RamString(p, N - 1, true);
+  static AdaptedString adapt(const char* p) {
+    ARDUINOJSON_ASSERT(p);
+    return RamString(p, ::strlen(p), true);
   }
 };
 
