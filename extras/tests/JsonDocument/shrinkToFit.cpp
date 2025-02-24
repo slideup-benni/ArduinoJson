@@ -75,7 +75,11 @@ TEST_CASE("JsonDocument::shrinkToFit()") {
     doc.shrinkToFit();
 
     REQUIRE(doc.as<std::string>() == "hello");
-    REQUIRE(spyingAllocator.log() == AllocatorLog{});
+    REQUIRE(spyingAllocator.log() ==
+            AllocatorLog{
+                Allocate(sizeofStaticStringPool()),
+                Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(1)),
+            });
   }
 
   SECTION("owned string") {
@@ -110,7 +114,9 @@ TEST_CASE("JsonDocument::shrinkToFit()") {
     REQUIRE(spyingAllocator.log() ==
             AllocatorLog{
                 Allocate(sizeofPool()),
+                Allocate(sizeofStaticStringPool()),
                 Reallocate(sizeofPool(), sizeofObject(1)),
+                Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(1)),
             });
   }
 
@@ -137,7 +143,9 @@ TEST_CASE("JsonDocument::shrinkToFit()") {
     REQUIRE(spyingAllocator.log() ==
             AllocatorLog{
                 Allocate(sizeofPool()),
+                Allocate(sizeofStaticStringPool()),
                 Reallocate(sizeofPool(), sizeofArray(1)),
+                Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(1)),
             });
   }
 
@@ -164,20 +172,23 @@ TEST_CASE("JsonDocument::shrinkToFit()") {
     REQUIRE(spyingAllocator.log() ==
             AllocatorLog{
                 Allocate(sizeofPool()),
+                Allocate(sizeofStaticStringPool()),
                 Reallocate(sizeofPool(), sizeofObject(1)),
+                Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(2)),
             });
   }
 
   SECTION("owned string in object") {
-    doc["key"] = "abcdefg"_s;
+    doc["key"_s] = "value"_s;
 
     doc.shrinkToFit();
 
-    REQUIRE(doc.as<std::string>() == "{\"key\":\"abcdefg\"}");
+    REQUIRE(doc.as<std::string>() == "{\"key\":\"value\"}");
     REQUIRE(spyingAllocator.log() ==
             AllocatorLog{
                 Allocate(sizeofPool()),
-                Allocate(sizeofString("abcdefg")),
+                Allocate(sizeofString("key")),
+                Allocate(sizeofString("value")),
                 Reallocate(sizeofPool(), sizeofPool(2)),
             });
   }

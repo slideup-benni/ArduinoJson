@@ -38,13 +38,15 @@ TEST_CASE("JsonVariant::set(JsonVariant)") {
     REQUIRE(var1.as<std::string>() == "{\"value\":[42]}");
   }
 
-  SECTION("stores const char* by reference") {
+  SECTION("stores string literals by pointer") {
     var1.set("hello!!");
     spyingAllocator.clearLog();
 
     var2.set(var1);
 
-    REQUIRE(spyingAllocator.log() == AllocatorLog{});
+    REQUIRE(spyingAllocator.log() == AllocatorLog{
+                                         Allocate(sizeofStaticStringPool()),
+                                     });
   }
 
   SECTION("stores char* by copy") {

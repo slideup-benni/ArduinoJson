@@ -34,6 +34,11 @@ class Slot {
     return ptr_;
   }
 
+  T& operator*() const {
+    ARDUINOJSON_ASSERT(ptr_ != nullptr);
+    return *ptr_;
+  }
+
   T* operator->() const {
     ARDUINOJSON_ASSERT(ptr_ != nullptr);
     return ptr_;

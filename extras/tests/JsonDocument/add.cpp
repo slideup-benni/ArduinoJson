@@ -32,6 +32,7 @@ TEST_CASE("JsonDocument::add(T)") {
     REQUIRE(doc.as<std::string>() == "[\"hello\"]");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 

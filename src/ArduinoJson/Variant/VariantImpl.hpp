@@ -18,6 +18,20 @@ inline void VariantData::setRawString(SerializedValue<T> value,
     setRawString(dup);
 }
 
+inline bool VariantData::setLinkedString(const char* s,
+                                         ResourceManager* resources) {
+  ARDUINOJSON_ASSERT(type_ == VariantType::Null);  // must call clear() first
+  ARDUINOJSON_ASSERT(s);
+
+  auto slotId = resources->saveStaticString(s);
+  if (slotId == NULL_SLOT)
+    return false;
+
+  type_ = VariantType::LinkedString;
+  content_.asSlotId = slotId;
+  return true;
+}
+
 template <typename TAdaptedString>
 inline bool VariantData::setString(TAdaptedString value,
                                    ResourceManager* resources) {
@@ -26,10 +40,8 @@ inline bool VariantData::setString(TAdaptedString value,
   if (value.isNull())
     return false;
 
-  if (value.isStatic()) {
-    setLinkedString(value.data());
-    return true;
-  }
+  if (value.isStatic())
+    return setLinkedString(value.data(), resources);
 
   auto dup = resources->saveString(value);
   if (dup) {
@@ -64,6 +76,12 @@ inline const VariantExtension* VariantData::getExtension(
              : nullptr;
 }
 #endif
+
+inline const char* VariantData::asLinkedString(
+    const ResourceManager* resources) const {
+  ARDUINOJSON_ASSERT(type_ == VariantType::LinkedString);
+  return resources->getStaticString(content_.asSlotId);
+}
 
 template <typename T>
 enable_if_t<sizeof(T) == 8, bool> VariantData::setFloat(

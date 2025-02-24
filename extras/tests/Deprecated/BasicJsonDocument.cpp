@@ -54,7 +54,7 @@ TEST_CASE("BasicJsonDocument") {
     doc["hello"] = "world";
     auto copy = doc;
     REQUIRE(copy.as<std::string>() == "{\"hello\":\"world\"}");
-    REQUIRE(allocatorLog == "AA");
+    REQUIRE(allocatorLog == "AAAA");
   }
 
   SECTION("capacity") {

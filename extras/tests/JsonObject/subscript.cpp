@@ -102,21 +102,25 @@ TEST_CASE("JsonObject::operator[]") {
     REQUIRE(42 == obj[key]);
   }
 
-  SECTION("should not duplicate const char*") {
+  SECTION("string literals") {
     obj["hello"] = "world";
-    REQUIRE(spy.log() == AllocatorLog{Allocate(sizeofPool())});
+    REQUIRE(spy.log() == AllocatorLog{
+                             Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
+                         });
   }
 
   SECTION("should duplicate char* value") {
     obj["hello"] = const_cast<char*>("world");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              Allocate(sizeofString("world")),
                          });
   }
 
   SECTION("should duplicate char* key") {
-    obj[const_cast<char*>("hello")] = "world";
+    obj[const_cast<char*>("hello")] = 42;
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
                              Allocate(sizeofString("hello")),
@@ -136,12 +140,13 @@ TEST_CASE("JsonObject::operator[]") {
     obj["hello"] = "world"_s;
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              Allocate(sizeofString("world")),
                          });
   }
 
   SECTION("should duplicate std::string key") {
-    obj["hello"_s] = "world";
+    obj["hello"_s] = 42;
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
                              Allocate(sizeofString("hello")),
@@ -158,7 +163,7 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("should duplicate a non-static JsonString key") {
-    obj[JsonString("hello", false)] = "world";
+    obj[JsonString("hello", false)] = 42;
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
                              Allocate(sizeofString("hello")),
@@ -166,9 +171,10 @@ TEST_CASE("JsonObject::operator[]") {
   }
 
   SECTION("should not duplicate a static JsonString key") {
-    obj[JsonString("hello", true)] = "world";
+    obj[JsonString("hello", true)] = 42;
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 

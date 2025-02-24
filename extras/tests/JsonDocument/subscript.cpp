@@ -112,6 +112,7 @@ TEST_CASE("JsonDocument::operator[] key storage") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":0}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 

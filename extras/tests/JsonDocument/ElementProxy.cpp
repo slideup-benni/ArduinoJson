@@ -31,6 +31,7 @@ TEST_CASE("ElementProxy::add()") {
     REQUIRE(doc.as<std::string>() == "[[\"world\"]]");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 

@@ -64,7 +64,7 @@ class VariantData {
         return visit.visit(content_.asObject);
 
       case VariantType::LinkedString:
-        return visit.visit(JsonString(content_.asLinkedString, true));
+        return visit.visit(JsonString(asLinkedString(resources), true));
 
       case VariantType::OwnedString:
         return visit.visit(JsonString(content_.asOwnedString->data,
@@ -200,7 +200,7 @@ class VariantData {
         return static_cast<T>(extension->asInt64);
 #endif
       case VariantType::LinkedString:
-        str = content_.asLinkedString;
+        str = asLinkedString(resources);
         break;
       case VariantType::OwnedString:
         str = content_.asOwnedString->data;
@@ -242,7 +242,7 @@ class VariantData {
         return convertNumber<T>(extension->asInt64);
 #endif
       case VariantType::LinkedString:
-        str = content_.asLinkedString;
+        str = asLinkedString(resources);
         break;
       case VariantType::OwnedString:
         str = content_.asOwnedString->data;
@@ -279,10 +279,12 @@ class VariantData {
     }
   }
 
-  JsonString asString() const {
+  const char* asLinkedString(const ResourceManager* resources) const;
+
+  JsonString asString(const ResourceManager* resources) const {
     switch (type_) {
       case VariantType::LinkedString:
-        return JsonString(content_.asLinkedString, true);
+        return JsonString(asLinkedString(resources), true);
       case VariantType::OwnedString:
         return JsonString(content_.asOwnedString->data,
                           content_.asOwnedString->length);
@@ -502,12 +504,7 @@ class VariantData {
     var->setString(value, resources);
   }
 
-  void setLinkedString(const char* s) {
-    ARDUINOJSON_ASSERT(type_ == VariantType::Null);  // must call clear() first
-    ARDUINOJSON_ASSERT(s);
-    type_ = VariantType::LinkedString;
-    content_.asLinkedString = s;
-  }
+  bool setLinkedString(const char* s, ResourceManager* resources);
 
   void setOwnedString(StringNode* s) {
     ARDUINOJSON_ASSERT(type_ == VariantType::Null);  // must call clear() first

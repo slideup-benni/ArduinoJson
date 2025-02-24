@@ -275,6 +275,12 @@ inline size_t sizeofPool(
   return MemoryPool<VariantData>::slotsToBytes(n);
 }
 
+inline size_t sizeofStaticStringPool(
+    ArduinoJson::detail::SlotCount n = ARDUINOJSON_POOL_CAPACITY) {
+  using namespace ArduinoJson::detail;
+  return MemoryPool<const char*>::slotsToBytes(n);
+}
+
 inline size_t sizeofStringBuffer(size_t iteration = 1) {
   // returns 31, 63, 127, 255, etc.
   auto capacity = ArduinoJson::detail::StringBuilder::initialCapacity;

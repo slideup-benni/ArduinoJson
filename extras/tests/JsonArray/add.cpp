@@ -56,6 +56,7 @@ TEST_CASE("JsonArray::add(T)") {
     REQUIRE(array[0].is<int>() == false);
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 

@@ -36,7 +36,7 @@ inline ObjectData::iterator ObjectData::findKey(
     return iterator();
   bool isKey = true;
   for (auto it = createIterator(resources); !it.done(); it.next(resources)) {
-    if (isKey && stringEquals(key, adaptString(it->asString())))
+    if (isKey && stringEquals(key, adaptString(it->asString(resources))))
       return it;
     isKey = !isKey;
   }

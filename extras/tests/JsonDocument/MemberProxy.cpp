@@ -25,6 +25,7 @@ TEST_CASE("MemberProxy::add()") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":[42]}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 
@@ -34,6 +35,7 @@ TEST_CASE("MemberProxy::add()") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":[\"world\"]}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                          });
   }
 
@@ -44,6 +46,7 @@ TEST_CASE("MemberProxy::add()") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":[\"world\"]}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              Allocate(sizeofString("world")),
                          });
   }
@@ -55,8 +58,8 @@ TEST_CASE("MemberProxy::add()") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":[\"world\"]}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              Allocate(sizeofString("world")),
-
                          });
   }
 
@@ -71,6 +74,7 @@ TEST_CASE("MemberProxy::add()") {
     REQUIRE(doc.as<std::string>() == "{\"hello\":[\"world\"]}");
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              Allocate(sizeofString("world")),
                          });
   }
@@ -399,7 +403,7 @@ TEST_CASE("MemberProxy under memory constraints") {
   }
 
   SECTION("value slot allocation fails") {
-    timebomb.setCountdown(1);
+    timebomb.setCountdown(2);
 
     // fill the pool entirely, but leave one slot for the key
     doc["foo"][ARDUINOJSON_POOL_CAPACITY - 4] = 1;
@@ -412,6 +416,7 @@ TEST_CASE("MemberProxy under memory constraints") {
     REQUIRE(doc.overflowed() == true);
     REQUIRE(spy.log() == AllocatorLog{
                              Allocate(sizeofPool()),
+                             Allocate(sizeofStaticStringPool()),
                              AllocateFail(sizeofPool()),
                          });
   }

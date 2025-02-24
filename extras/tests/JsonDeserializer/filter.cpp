@@ -825,7 +825,9 @@ TEST_CASE("shrink filter") {
 
   deserializeJson(doc, "{}", DeserializationOption::Filter(filter));
 
-  REQUIRE(spy.log() == AllocatorLog{
-                           Reallocate(sizeofPool(), sizeofObject(1)),
-                       });
+  REQUIRE(spy.log() ==
+          AllocatorLog{
+              Reallocate(sizeofPool(), sizeofObject(1)),
+              Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(1)),
+          });
 }

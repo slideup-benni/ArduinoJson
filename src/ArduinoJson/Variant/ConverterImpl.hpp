@@ -160,7 +160,7 @@ struct Converter<const char*> : private detail::VariantAttorney {
 
   static const char* fromJson(JsonVariantConst src) {
     auto data = getData(src);
-    return data ? data->asString().c_str() : 0;
+    return data ? data->asString(getResourceManager(src)).c_str() : 0;
   }
 
   static bool checkJson(JsonVariantConst src) {
@@ -178,7 +178,7 @@ struct Converter<JsonString> : private detail::VariantAttorney {
 
   static JsonString fromJson(JsonVariantConst src) {
     auto data = getData(src);
-    return data ? data->asString() : JsonString();
+    return data ? data->asString(getResourceManager(src)) : JsonString();
   }
 
   static bool checkJson(JsonVariantConst src) {
