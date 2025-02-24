@@ -28,8 +28,7 @@ class JsonString {
             detail::enable_if_t<detail::is_integral<TSize>::value &&
                                     !detail::is_same<TSize, bool>::value,
                                 int> = 0>
-  JsonString(const char* data, TSize sz, bool isStatic = false)
-      : str_(data, size_t(sz), isStatic) {}
+  JsonString(const char* data, TSize sz) : str_(data, size_t(sz), false) {}
 
   // Returns a pointer to the characters.
   const char* c_str() const {
