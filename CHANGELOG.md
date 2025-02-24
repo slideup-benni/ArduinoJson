@@ -6,6 +6,39 @@ HEAD
 
 * Fix conversion from static string to number
 * Slightly reduce code size
+* Optimize storage of static strings
+
+> ### BREAKING CHANGES
+>
+> Static string cannot contain NUL characters anymore (they could since 7.3.0).
+> This is an extremely rare case, so you probably won't be affected.
+>
+> For example, the following code produces different output in 7.3 and 7.4:
+>
+> ```cpp
+> JsonDocument doc;
+> doc["a\0b"] = "c\0d";
+> serializeJson(doc, Serial);
+> // With Arduino 7.3 -> {"a\u0000b":"c\u0000d"}
+> // With Arduino 7.4 -> {"a":"c"}
+> ```
+>
+> `JsonString` contructor now only accepts two arguments, not three.
+> If your code uses `JsonString` to store a string as a pointer, you must remove the size argument.
+>
+> For example, if you have something like this:
+>
+> ```cpp
+> doc["key"] = JsonString(str.c_str(), str.size(), true);
+> ```
+>
+> You must replace with either:
+>
+> ```cpp
+> doc["key"] = JsonString(str.c_str(), true);  // store as pointer, cannot contain NUL characters
+> doc["key"] = JsonString(str.c_str(), str.size()); // store by copy, NUL characters allowed
+> doc["key"] = str; // same as previous line for supported string classes (`String`, `std::string`, etc.)
+> ```
 
 v7.3.0 (2024-12-29)
 ------
