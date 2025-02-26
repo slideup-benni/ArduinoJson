@@ -23,12 +23,15 @@ TEST_CASE("ResourceManager::saveStaticString()") {
   SpyingAllocator spy;
   ResourceManager resources(&spy);
 
-  auto a = resources.saveStaticString("hello");
-  auto b = resources.saveStaticString("world");
-  REQUIRE(a != b);
+  auto str1 = "hello";
+  auto str2 = "world";
 
-  auto c = resources.saveStaticString("hello");
-  REQUIRE(a == c);
+  auto id1 = resources.saveStaticString(str1);
+  auto id2 = resources.saveStaticString(str2);
+  REQUIRE(id1 != id2);
+
+  auto id3 = resources.saveStaticString(str1);
+  REQUIRE(id1 == id3);
 
   resources.shrinkToFit();
   REQUIRE(spy.log() ==
