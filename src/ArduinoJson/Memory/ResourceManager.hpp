@@ -121,6 +121,8 @@ class ResourceManager {
     auto slot = staticStringsPools_.allocSlot(allocator_);
     if (slot)
       *slot = s;
+    else
+      overflowed_ = true;
 
     return slot.id();
   }
@@ -130,8 +132,8 @@ class ResourceManager {
   }
 
   void clear() {
-    variantPools_.clear(allocator_);
     overflowed_ = false;
+    variantPools_.clear(allocator_);
     stringPool_.clear(allocator_);
     staticStringsPools_.clear(allocator_);
   }

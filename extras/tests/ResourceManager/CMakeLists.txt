@@ -5,6 +5,7 @@
 add_executable(ResourceManagerTests
 	allocVariant.cpp
 	clear.cpp
+	saveStaticString.cpp
 	saveString.cpp
 	shrinkToFit.cpp
 	size.cpp

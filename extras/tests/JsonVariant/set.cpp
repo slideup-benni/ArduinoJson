@@ -257,6 +257,20 @@ TEST_CASE("JsonVariant::set() with not enough memory") {
 
   JsonVariant v = doc.to<JsonVariant>();
 
+  SECTION("string literal") {
+    bool result = v.set("hello world");
+
+    REQUIRE(result == false);
+    REQUIRE(v.isNull());
+  }
+
+  SECTION("static JsonString") {
+    bool result = v.set(JsonString("hello world", true));
+
+    REQUIRE(result == false);
+    REQUIRE(v.isNull());
+  }
+
   SECTION("std::string") {
     bool result = v.set("hello world!!"_s);
 
