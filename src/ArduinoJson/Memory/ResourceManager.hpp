@@ -114,10 +114,14 @@ class ResourceManager {
   }
 
   SlotId saveStaticString(const char* s) {
+    auto existingSlotId = staticStringsPools_.find(s);
+    if (existingSlotId != NULL_SLOT)
+      return existingSlotId;
+
     auto slot = staticStringsPools_.allocSlot(allocator_);
-    if (!slot)
-      return NULL_SLOT;
-    *slot = s;
+    if (slot)
+      *slot = s;
+
     return slot.id();
   }
 

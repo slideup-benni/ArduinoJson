@@ -382,6 +382,24 @@ TEST_CASE("Deduplicate keys") {
                              Allocate(sizeofString("example")),
                          });
   }
+
+  SECTION("string literals") {
+    doc[0]["example"] = 1;
+    doc[1]["example"] = 2;
+    doc.shrinkToFit();
+
+    const char* key1 = doc[0].as<JsonObject>().begin()->key().c_str();
+    const char* key2 = doc[1].as<JsonObject>().begin()->key().c_str();
+    CHECK(key1 == key2);
+
+    REQUIRE(spy.log() ==
+            AllocatorLog{
+                Allocate(sizeofPool()),
+                Allocate(sizeofStaticStringPool()),
+                Reallocate(sizeofPool(), sizeofPool(6)),
+                Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(1)),
+            });
+  }
 }
 
 TEST_CASE("MemberProxy under memory constraints") {

@@ -114,6 +114,15 @@ class MemoryPoolList {
     return pools_[poolIndex].getSlot(indexInPool);
   }
 
+  SlotId find(const T& value) const {
+    for (PoolCount i = 0; i < count_; i++) {
+      SlotId id = pools_[i].find(value);
+      if (id != NULL_SLOT)
+        return SlotId(i * ARDUINOJSON_POOL_CAPACITY + id);
+    }
+    return NULL_SLOT;
+  }
+
   void clear(Allocator* allocator) {
     for (PoolCount i = 0; i < count_; i++)
       pools_[i].destroy(allocator);

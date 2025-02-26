@@ -81,6 +81,14 @@ class MemoryPool {
     return slots_ + id;
   }
 
+  SlotId find(const T& value) const {
+    for (SlotId i = 0; i < usage_; i++) {
+      if (slots_[i] == value)
+        return i;
+    }
+    return NULL_SLOT;
+  }
+
   void clear() {
     usage_ = 0;
   }

@@ -19,6 +19,25 @@ static StringNode* saveString(ResourceManager& resources, const char* s,
   return resources.saveString(adaptString(s, n));
 }
 
+TEST_CASE("ResourceManager::saveStaticString()") {
+  SpyingAllocator spy;
+  ResourceManager resources(&spy);
+
+  auto a = resources.saveStaticString("hello");
+  auto b = resources.saveStaticString("world");
+  REQUIRE(a != b);
+
+  auto c = resources.saveStaticString("hello");
+  REQUIRE(a == c);
+
+  resources.shrinkToFit();
+  REQUIRE(spy.log() ==
+          AllocatorLog{
+              Allocate(sizeofStaticStringPool()),
+              Reallocate(sizeofStaticStringPool(), sizeofStaticStringPool(2)),
+          });
+}
+
 TEST_CASE("ResourceManager::saveString()") {
   ResourceManager resources;
 
