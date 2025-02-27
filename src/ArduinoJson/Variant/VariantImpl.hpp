@@ -31,6 +31,17 @@ inline bool VariantData::setString(TAdaptedString value,
     return true;
   }
 
+  if (value.size() <= tinyStringMaxLength) {
+    uint8_t length = static_cast<uint8_t>(value.size());
+    bool containsNul = false;
+    for (uint8_t i = 0; i < length; i++)
+      containsNul |= !value[i];
+    if (!containsNul) {
+      setTinyString(value.data(), length);
+      return true;
+    }
+  }
+
   auto dup = resources->saveString(value);
   if (dup) {
     setOwnedString(dup);

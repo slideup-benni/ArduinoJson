@@ -63,6 +63,9 @@ class VariantData {
       case VariantType::Object:
         return visit.visit(content_.asObject);
 
+      case VariantType::TinyString:
+        return visit.visit(JsonString(content_.asTinyString));
+
       case VariantType::LinkedString:
         return visit.visit(JsonString(content_.asLinkedString, true));
 
@@ -199,6 +202,9 @@ class VariantData {
       case VariantType::Int64:
         return static_cast<T>(extension->asInt64);
 #endif
+      case VariantType::TinyString:
+        str = content_.asTinyString;
+        break;
       case VariantType::LinkedString:
         str = content_.asLinkedString;
         break;
@@ -241,6 +247,9 @@ class VariantData {
       case VariantType::Int64:
         return convertNumber<T>(extension->asInt64);
 #endif
+      case VariantType::TinyString:
+        str = content_.asTinyString;
+        break;
       case VariantType::LinkedString:
         str = content_.asLinkedString;
         break;
@@ -281,6 +290,8 @@ class VariantData {
 
   JsonString asString() const {
     switch (type_) {
+      case VariantType::TinyString:
+        return JsonString(content_.asTinyString);
       case VariantType::LinkedString:
         return JsonString(content_.asLinkedString, true);
       case VariantType::OwnedString:
@@ -395,7 +406,8 @@ class VariantData {
 
   bool isString() const {
     return type_ == VariantType::LinkedString ||
-           type_ == VariantType::OwnedString;
+           type_ == VariantType::OwnedString ||
+           type_ == VariantType::TinyString;
   }
 
   size_t nesting(const ResourceManager* resources) const {
@@ -502,6 +514,15 @@ class VariantData {
     ARDUINOJSON_ASSERT(s);
     type_ = VariantType::LinkedString;
     content_.asLinkedString = s;
+  }
+
+  void setTinyString(const char* s, uint8_t n) {
+    ARDUINOJSON_ASSERT(type_ == VariantType::Null);  // must call clear() first
+    ARDUINOJSON_ASSERT(s);
+    type_ = VariantType::TinyString;
+    for (uint8_t i = 0; i < n; i++)
+      content_.asTinyString[i] = s[i];
+    content_.asTinyString[n] = 0;
   }
 
   void setOwnedString(StringNode* s) {
