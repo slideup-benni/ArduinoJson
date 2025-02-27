@@ -17,6 +17,16 @@ ARDUINOJSON_BEGIN_PRIVATE_NAMESPACE
 template <typename T>
 T parseNumber(const char* s);
 
+template <typename T>
+static bool isTinyString(const T& s, size_t n) {
+  if (n > tinyStringMaxLength)
+    return false;
+  bool containsNul = false;
+  for (uint8_t i = 0; i < uint8_t(n); i++)
+    containsNul |= !s[i];
+  return !containsNul;
+}
+
 class VariantData {
   VariantContent content_;  // must be first to allow cast from array to variant
   VariantType type_;
