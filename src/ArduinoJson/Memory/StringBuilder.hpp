@@ -28,8 +28,15 @@ class StringBuilder {
   void save(VariantData* variant) {
     ARDUINOJSON_ASSERT(variant != nullptr);
     ARDUINOJSON_ASSERT(node_ != nullptr);
-    node_->data[size_] = 0;
-    StringNode* node = resources_->getString(adaptString(node_->data, size_));
+
+    char* p = node_->data;
+    if (isTinyString(p, size_)) {
+      variant->setTinyString(p, static_cast<uint8_t>(size_));
+      return;
+    }
+
+    p[size_] = 0;
+    StringNode* node = resources_->getString(adaptString(p, size_));
     if (!node) {
       node = resources_->resizeString(node_, size_);
       ARDUINOJSON_ASSERT(node != nullptr);  // realloc to smaller can't fail

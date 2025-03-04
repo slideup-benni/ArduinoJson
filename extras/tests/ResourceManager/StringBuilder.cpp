@@ -22,13 +22,31 @@ TEST_CASE("StringBuilder") {
     str.startString();
     str.save(&data);
 
-    REQUIRE(resources.size() == sizeofString(""));
     REQUIRE(resources.overflowed() == false);
-    REQUIRE(spyingAllocator.log() ==
-            AllocatorLog{
-                Allocate(sizeofStringBuffer()),
-                Reallocate(sizeofStringBuffer(), sizeofString("")),
-            });
+    REQUIRE(spyingAllocator.log() == AllocatorLog{
+                                         Allocate(sizeofStringBuffer()),
+                                     });
+    REQUIRE(data.type() == VariantType::TinyString);
+  }
+
+  SECTION("Tiny string") {
+    StringBuilder str(&resources);
+
+    str.startString();
+    str.append("url");
+
+    REQUIRE(str.isValid() == true);
+    REQUIRE(str.str() == "url");
+    REQUIRE(spyingAllocator.log() == AllocatorLog{
+                                         Allocate(sizeofStringBuffer()),
+                                     });
+
+    VariantData data;
+    str.save(&data);
+
+    REQUIRE(resources.overflowed() == false);
+    REQUIRE(data.type() == VariantType::TinyString);
+    REQUIRE(data.asString() == "url");
   }
 
   SECTION("Short string fits in first allocation") {
@@ -149,10 +167,10 @@ TEST_CASE("StringBuilder::save() deduplicates strings") {
 
   SECTION("Don't overrun") {
     auto s1 = saveString(builder, "hello world");
-    auto s2 = saveString(builder, "wor");
+    auto s2 = saveString(builder, "worl");
 
     REQUIRE(s1 == "hello world"_s);
-    REQUIRE(s2 == "wor"_s);
+    REQUIRE(s2 == "worl"_s);
     REQUIRE(s2 != s1);
 
     REQUIRE(spy.log() ==
@@ -160,7 +178,7 @@ TEST_CASE("StringBuilder::save() deduplicates strings") {
                 Allocate(sizeofStringBuffer()),
                 Reallocate(sizeofStringBuffer(), sizeofString("hello world")),
                 Allocate(sizeofStringBuffer()),
-                Reallocate(sizeofStringBuffer(), sizeofString("wor")),
+                Reallocate(sizeofStringBuffer(), sizeofString("worl")),
             });
   }
 }
