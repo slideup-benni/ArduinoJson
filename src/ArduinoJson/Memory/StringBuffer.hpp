@@ -34,12 +34,14 @@ class StringBuffer {
 
   JsonString str() const {
     ARDUINOJSON_ASSERT(node_ != nullptr);
-
     return JsonString(node_->data, node_->length);
   }
 
   void save(VariantData* data) {
-    data->setOwnedString(commitStringNode());
+    if (size_ <= tinyStringMaxLength)
+      data->setTinyString(node_->data, static_cast<uint8_t>(size_));
+    else
+      data->setOwnedString(commitStringNode());
   }
 
   void saveRaw(VariantData* data) {
