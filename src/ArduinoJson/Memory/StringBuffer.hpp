@@ -38,7 +38,8 @@ class StringBuffer {
   }
 
   void save(VariantData* data) {
-    if (size_ <= tinyStringMaxLength)
+    ARDUINOJSON_ASSERT(node_ != nullptr);
+    if (isTinyString(node_->data, size_))
       data->setTinyString(node_->data, static_cast<uint8_t>(size_));
     else
       data->setOwnedString(commitStringNode());
