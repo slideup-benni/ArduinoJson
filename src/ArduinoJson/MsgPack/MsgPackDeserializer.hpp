@@ -403,7 +403,7 @@ class MsgPackDeserializer {
 
       JsonString key = stringBuffer_.str();
       TFilter memberFilter = filter[key.c_str()];
-      VariantData* member;
+      VariantData* member = 0;
 
       if (memberFilter.allow()) {
         ARDUINOJSON_ASSERT(object != 0);
@@ -413,8 +413,6 @@ class MsgPackDeserializer {
           return DeserializationError::NoMemory;
 
         stringBuffer_.save(keyVariant);
-      } else {
-        member = 0;
       }
 
       err = parseVariant(member, memberFilter, nestingLimit.decrement());
