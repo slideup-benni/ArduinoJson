@@ -35,7 +35,7 @@ class JsonDeserializer {
 
     if (!_error && _latch.last() != 0 && !variant.isEnclosed()) {
       // We don't detect trailing characters earlier, so we need to check now
-      return DeserializationError::InvalidInput;
+      return DeserializationError::InvalidInput1;
     }
 
     return _error;
@@ -159,7 +159,7 @@ class JsonDeserializer {
       if (eat(']'))
         return true;
       if (!eat(',')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput13;
         return false;
       }
     }
@@ -189,7 +189,7 @@ class JsonDeserializer {
       if (eat(']'))
         return true;
       if (!eat(',')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput2;
         return false;
       }
     }
@@ -227,7 +227,7 @@ class JsonDeserializer {
 
       // Colon
       if (!eat(':')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput3;
         return false;
       }
 
@@ -270,7 +270,7 @@ class JsonDeserializer {
       if (eat('}'))
         return true;
       if (!eat(',')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput4;
         return false;
       }
 
@@ -310,7 +310,7 @@ class JsonDeserializer {
 
       // Colon
       if (!eat(':')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput5;
         return false;
       }
 
@@ -326,7 +326,7 @@ class JsonDeserializer {
       if (eat('}'))
         return true;
       if (!eat(',')) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput6;
         return false;
       }
     }
@@ -393,7 +393,7 @@ class JsonDeserializer {
         // replace char
         c = EscapeSequence::unescapeChar(c);
         if (c == '\0') {
-          _error = DeserializationError::InvalidInput;
+          _error = DeserializationError::InvalidInput7;
           return false;
         }
         move();
@@ -423,7 +423,7 @@ class JsonDeserializer {
         c = current();
       } while (canBeInNonQuotedString(c));
     } else {
-      _error = DeserializationError::InvalidInput;
+      _error = DeserializationError::InvalidInput8;
       return false;
     }
 
@@ -497,7 +497,7 @@ class JsonDeserializer {
     }
 
     if (!parseNumber(_buffer, result)) {
-      _error = DeserializationError::InvalidInput;
+      _error = DeserializationError::InvalidInput9;
       return false;
     }
 
@@ -523,7 +523,7 @@ class JsonDeserializer {
       }
       uint8_t value = decodeHex(digit);
       if (value > 0x0F) {
-        _error = DeserializationError::InvalidInput;
+        _error = DeserializationError::InvalidInput10;
         return false;
       }
       result = uint16_t((result << 4) | value);
@@ -611,7 +611,7 @@ class JsonDeserializer {
 
             // not a comment, just a '/'
             default:
-              _error = DeserializationError::InvalidInput;
+              _error = DeserializationError::InvalidInput11;
               return false;
           }
           break;
