@@ -94,7 +94,22 @@ class DeserializationError {
   const char* c_str() const {
     static const char* messages[] = {
         "Ok",           "EmptyInput", "IncompleteInput",
-        "InvalidInput", "NoMemory",   "TooDeep"};
+        "InvalidInput",
+        "InvalidInput1",
+            "InvalidInput1",
+            "InvalidInput2",
+            "InvalidInput3",
+            "InvalidInput4",
+            "InvalidInput5",
+            "InvalidInput6",
+            "InvalidInput7",
+            "InvalidInput8",
+            "InvalidInput9",
+            "InvalidInput10",
+            "InvalidInput11",
+            "InvalidInput12",
+            "InvalidInput13",
+        "NoMemory",   "TooDeep"};
     ARDUINOJSON_ASSERT(static_cast<size_t>(_code) <
                        sizeof(messages) / sizeof(messages[0]));
     return messages[_code];
