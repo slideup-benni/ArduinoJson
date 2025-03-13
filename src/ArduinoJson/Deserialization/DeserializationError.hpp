@@ -95,7 +95,6 @@ class DeserializationError {
     static const char* messages[] = {
         "Ok",           "EmptyInput", "IncompleteInput",
         "InvalidInput",
-        "InvalidInput1",
             "InvalidInput1",
             "InvalidInput2",
             "InvalidInput3",
